@@ -17,9 +17,29 @@ class GameObject(pygame.sprite.Sprite):
     def render(self, screen):
         screen.blit(self.surf, (self.x, self.y))
 
-# instance of GameObject
-apple = GameObject(120, 300, 'apple.png')
-strawberry = GameObject(350, 350, 'strawberry.png')
+# load imgaes
+apple_image= 'apple.png'
+strawberry_image = 'strawberry.png'
+
+# list to store game objects
+objects = []
+
+# nested loop
+fruit_positions = [
+    [apple_image, strawberry_image, apple_image],
+    [strawberry_image, apple_image, strawberry_image],
+    [apple_image, strawberry_image, apple_image]
+]
+
+start_x, start_y = 100, 100
+spacing = 150
+
+for row in range(3):
+    for col in range(3):
+        x = start_x + col * spacing
+        y = start_y + row * spacing
+        image = fruit_positions[row][col]
+        objects.append(GameObject(x, y, image))
 
 # Creat the game loop
 running = True
@@ -31,8 +51,8 @@ while running:
       
   # Draw a circle
   screen.fill((255, 255, 255))
-  #draw surface
-  apple.render(screen)
-  strawberry.render(screen)
+  #render all objects
+  for obj in objects:
+    obj.render(screen)
   # Update the window
   pygame.display.flip()
