@@ -77,12 +77,17 @@ class Strawberry(GameObject):
     def move(self):
         self.x += self.dx
         self.y += self.dy
-        if self.x > 500:
+        if self.x > 500 or self.x < -64:
             self.reset()
 
     def reset(self):
         self.y = choice(lanes)
-        self.x = -64
+        direction = choice([-1, 1])
+        self.dx = direction * ((randint(1, 200)/ 100) + 1)
+        if direction == -1:
+            self.x = 500
+        else:
+            self.x = -64
 
 class Apple(GameObject):
     def __init__(self):
@@ -94,21 +99,67 @@ class Apple(GameObject):
     def move(self):
         self.x += self.dx
         self.y += self.dy
-        if self.y > 500:
+        if self.y > 500 or self.y < -64:
             self.reset()
 
     def reset(self):
         self.x = choice(lanes)
-        self.y = -64
+        direction = choice([-1, 1])
+        self.dy = direction * ((randint(1, 200)/ 100) + 1)
+        if direction == -1:
+            self.y = 500
+        else:
+            self.y = -64
+
+class Bomb(GameObject):
+    def __init__(self):
+        super(Bomb, self).__init__(0, 0, 'bomb.png')
+        self.dx = 0
+        self.dy = 0
+        self.reset()
+
+    def move(self):
+        self.x += self.dx
+        self.y += self.dy
+
+        if self.x < -64 or self.x > 500 or self.y < -64 or self.y > 500:
+            self.reset()
+
+    def reset(self):
+        self.x = choice(lanes)
+        self.y = choice(lanes)
+
+        direction = choice(['up', 'down', 'left', 'right'])
+        speed = (randint(1, 200) / 100) + 1
+
+        if direction == 'up':
+            self.dx = 0
+            self.dy = -speed
+            self.y = 500  # Start at the bottom
+        elif direction == 'down':
+            self.dx = 0
+            self.dy = speed
+            self.y = -64  # Start at the top
+        elif direction == 'left':
+            self.dx = -speed
+            self.dy = 0
+            self.x = 500  # Start at the right edge
+        elif direction == 'right':
+            self.dx = speed
+            self.dy = 0
+            self.x = -64  # Start at the left edge
+
 
 # instance of GameObject
 apple = Apple()
 strawberry = Strawberry()
 player = Player()
+bomb = Bomb()
 #adding sprites to all_sprites
 all_sprites.add(player)
 all_sprites.add(apple)
 all_sprites.add(strawberry)
+all_sprites.add(bomb)
 
 # Creat the game loop
 running = True
