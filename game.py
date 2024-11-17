@@ -1,9 +1,11 @@
 
 # Import and initialize pygame
 import pygame
+from random import randint
 pygame.init()
 # Configure the screen
 screen = pygame.display.set_mode([500, 500])
+clock = pygame.time.Clock()
 
 class GameObject(pygame.sprite.Sprite):
     def __init__(self, x, y, image):
@@ -17,29 +19,42 @@ class GameObject(pygame.sprite.Sprite):
     def render(self, screen):
         screen.blit(self.surf, (self.x, self.y))
 
-# load imgaes
-apple_image= 'apple.png'
-strawberry_image = 'strawberry.png'
+class Strawberry(GameObject):
+    def __init__(self):
+        super(Strawberry, self).__init__(0, 0, 'strawberry.png')
+        self.dy = 0
+        self.dx = (randint(1, 200)/ 100) + 1
+        self.reset()
+    def move(self):
+        self.x += self.dx
+        self.y += self.dy
+        if self.x > 500:
+            self.reset()
+    def reset(self):
+        self.y = randint(50, 400)
+        self.x = -64
 
-# list to store game objects
-objects = []
 
-# nested loop
-fruit_positions = [
-    [apple_image, strawberry_image, apple_image],
-    [strawberry_image, apple_image, strawberry_image],
-    [apple_image, strawberry_image, apple_image]
-]
+class Apple(GameObject):
+    def __init__(self):
+        super(Apple, self).__init__(0, 0, 'apple.png')
+        self.dx = 0
+        self.dy = (randint(1, 200)/ 100) + 1
+        self.reset()
 
-start_x, start_y = 100, 100
-spacing = 150
+    def move(self):
+        self.x += self.dx
+        self.y += self.dy
+        if self.y > 500:
+            self.reset()
 
-for row in range(3):
-    for col in range(3):
-        x = start_x + col * spacing
-        y = start_y + row * spacing
-        image = fruit_positions[row][col]
-        objects.append(GameObject(x, y, image))
+    def reset(self):
+        self.x = randint(50, 400)
+        self.y = -64
+
+# instance of GameObject
+apple = Apple()
+strawberry = Strawberry()
 
 # Creat the game loop
 running = True
@@ -51,8 +66,13 @@ while running:
       
   # Draw a circle
   screen.fill((255, 255, 255))
-  #render all objects
-  for obj in objects:
-    obj.render(screen)
+  #update the position
+  apple.move()
+  strawberry.move()
+  #draw surface
+  apple.render(screen)
+  strawberry.render(screen)
   # Update the window
   pygame.display.flip()
+  #tick the clock!
+  clock.tick(60)
