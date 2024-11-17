@@ -1,34 +1,36 @@
-import pygame 
-pygame.init()
 
-#confirm screen size
+# Import and initialize pygame
+import pygame
+pygame.init()
+# Configure the screen
 screen = pygame.display.set_mode([500, 500])
 
-#define colors & radius
-dark_grey = (50, 50, 50)
-radius = 50
+class GameObject(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height):
+       super(GameObject, self).__init__()
+       self.surf = pygame.Surface((width, height))
+       self.surf.fill((255, 0, 255))
+       self.rect = self.surf.get_rect()
+       self.x = x
+       self.y = y
 
-#spacing
-spacing = 150
-offset = 75
+    def render(self, screen):
+        screen.blit(self.surf, (self.x, self.y))
 
-#game loop
+# instance of GameObject
+box = GameObject(120, 300, 50, 50)
+
+# Creat the game loop
 running = True
 while running:
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    #clear the screen
-    screen.fill((255, 255, 255))
-    #nested loops to draw the circles
-    for row in range(3):
-        for col in range(3):
-            x = offset + col * spacing
-            y = offset + row * spacing
-            pygame.draw.circle(screen, dark_grey, (x, y), radius)
-    # update display
-    pygame.display.flip()
-
-pygame.quit()
+  # Looks at events
+  for event in pygame.event.get():
+    if event.type == pygame.QUIT:
+      running = False
+      
+  # Draw a circle
+  screen.fill((255, 255, 255))
+  #draw surface
+  box.render(screen)
+  # Update the window
+  pygame.display.flip()
