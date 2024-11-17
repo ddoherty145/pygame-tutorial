@@ -7,18 +7,20 @@ pygame.init()
 screen = pygame.display.set_mode([500, 500])
 clock = pygame.time.Clock()
 all_sprites = pygame.sprite.Group()
+fruit_sprites = pygame.sprite.Group()
 lanes = [93, 218, 343]
 
 class GameObject(pygame.sprite.Sprite):
     def __init__(self, x, y, image):
        super(GameObject, self).__init__()
-    #    self.surf = pygame.Surface((width, height))
-    #    self.surf.fill((255, 0, 255))
        self.surf = pygame.image.load(image)
        self.x = x
        self.y = y
+       self.rect = self.surf.get_rect()
 
     def render(self, screen):
+        self.rect.x = self.x
+        self.rect.y = self.y
         screen.blit(self.surf, (self.x, self.y))
 
 class Player(GameObject):
@@ -160,6 +162,8 @@ all_sprites.add(player)
 all_sprites.add(apple)
 all_sprites.add(strawberry)
 all_sprites.add(bomb)
+fruit_sprites.add(apple)
+fruit_sprites.add(strawberry)
 
 # Creat the game loop
 running = True
@@ -187,6 +191,14 @@ while running:
   for entity in all_sprites:
         entity.move()
         entity.render(screen)
+
+  fruit = pygame.sprite.spritecollideany(player, fruit_sprites)
+  if fruit:
+        fruit.reset()
+
+  if pygame.sprite.collide_rect(player, bomb):
+    running = False
+        
   # Update the window
   pygame.display.flip()
   #tick the clock!
