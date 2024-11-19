@@ -3,12 +3,19 @@
 import pygame
 from random import randint, choice
 pygame.init()
+
+#background
+background_image_path = 'firey_dungeon.png'
+background = pygame.image.load(background_image_path)
+
+image_width, image_height = background.get_size()
 # Configure the screen
-screen = pygame.display.set_mode([500, 500])
+screen = pygame.display.set_mode([image_width, image_height])
 clock = pygame.time.Clock()
 all_sprites = pygame.sprite.Group()
 fruit_sprites = pygame.sprite.Group()
 lanes = [93, 218, 343]
+
 
 class GameObject(pygame.sprite.Sprite):
     def __init__(self, x, y, image):
@@ -174,6 +181,14 @@ def display_score():
     score_text = font.render(f"Score: {score}", True, (0, 0, 0))
     screen.blit(score_text, (10, 10))
 
+#lives
+lives = 3
+heart_image = pygame.image.load('heart.png')
+
+def display_lives():
+    for i in range(lives):
+        screen.blit(heart_image, (10 + i * 40, 40))
+
 # Creat the game loop
 running = True
 while running:
@@ -193,8 +208,7 @@ while running:
         elif event.key == pygame.K_DOWN:
             player.down()
       
-  # Draw a circle
-  screen.fill((255, 255, 255))
+  screen.blit(background, (0, 0))
   
   #move and render sprites
   for entity in all_sprites:
@@ -207,9 +221,14 @@ while running:
         fruit.reset()
 
   if pygame.sprite.collide_rect(player, bomb):
-    running = False
+    lives -= 1
+    if lives <= 0:
+        running = False
+    else:
+        player.reset()
 
   display_score()
+  display_lives()
         
   # Update the window
   pygame.display.flip()
