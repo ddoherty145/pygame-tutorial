@@ -164,6 +164,15 @@ all_sprites.add(strawberry)
 all_sprites.add(bomb)
 fruit_sprites.add(apple)
 fruit_sprites.add(strawberry)
+#define score
+score = 0
+#font for score 
+pygame.font.init()
+font = pygame.font.SysFont(None, 32)
+#display font
+def display_score():
+    score_text = font.render(f"Score: {score}", True, (0, 0, 0))
+    screen.blit(score_text, (10, 10))
 
 # Creat the game loop
 running = True
@@ -194,10 +203,13 @@ while running:
 
   fruit = pygame.sprite.spritecollideany(player, fruit_sprites)
   if fruit:
+        score += 1
         fruit.reset()
 
   if pygame.sprite.collide_rect(player, bomb):
     running = False
+
+  display_score()
         
   # Update the window
   pygame.display.flip()
